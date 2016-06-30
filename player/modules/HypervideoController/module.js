@@ -512,6 +512,9 @@ FrameTrail.defineModule('HypervideoController', function(){
 
 		if ( !ViewVideo.VideoStartOverlay.hasClass('inactive') ) {
 			ViewVideo.VideoStartOverlay.addClass('inactive').fadeOut();
+			$.post( "../_server/analytics.php", function(newPlayCount) {
+				// console.log(newPlayCount);
+			});
 		}
 
 
