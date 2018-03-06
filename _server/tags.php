@@ -1,9 +1,10 @@
 <?php
 
 require_once("./config.php");
-require_once("./user.php");
+require_once("./projects.php");
 
 /**
+ * @param $projectID
  * @param $tagName
  * @param $lang
  * @param $label
@@ -11,21 +12,29 @@ require_once("./user.php");
  * @return mixed
 Returning Code:
 0		=	Success. In $return["response"] you will find the tagdefinitions
-1		=	failed. User is not logged in
+1		=	failed. User is not logged in as masterUser
+2		=	failed. Project Directory has not been found
 3		= 	failed. Name too short
 4		= 	failed. Language not correct (2 chars)
 5		= 	failed. Label too short (4 chars)
 6		= 	failed. Description too short (4 chars)
  */
-function tagSet($tagName,$lang,$label,$description) {
+function tagSet($projectID,$tagName,$lang,$label,$description) {
 	global $conf;
 
-	$login = userCheckLogin("admin");
+	$login = superUserLogin();
 
-	if ($login["code"] != 1) {
+	if ($login["status"] == "fail") {
 		$return["status"] = "fail";
 		$return["code"] = 1;
-		$return["string"] = $login["string"];
+		$return["string"] = "User not logged in with Masterpassword";
+		return $return;
+	}
+
+	if ((!$projectID) || (!is_dir($conf["dir"]["projects"]."/".$projectID))) {
+		$return["status"] = "fail";
+		$return["code"] = 2;
+		$return["string"] = "Projects Directory not found.";
 		return $return;
 	}
 
@@ -57,11 +66,11 @@ function tagSet($tagName,$lang,$label,$description) {
 		return $return;
 	}
 
-	if (!file_exists($conf["dir"]["data"]."/tagdefinitions.json")) {
-		file_put_contents($conf["dir"]["data"]."/tagdefinitions.json","{}");
+	if (!file_exists($conf["dir"]["projects"]."/".$projectID."/tagdefinitions.json")) {
+		file_put_contents($conf["dir"]["projects"]."/".$projectID."/tagdefinitions.json","{}");
 	}
 
-	$file = new sharedFile($conf["dir"]["data"]."/tagdefinitions.json");
+	$file = new sharedFile($conf["dir"]["projects"]."/".$projectID."/tagdefinitions.json");
 	$json = $file->read();
 	$t = json_decode($json,true);
 
@@ -79,26 +88,35 @@ function tagSet($tagName,$lang,$label,$description) {
 
 
 /**
+ * @param $projectID
  * @param $tagName
 Returning Code:
 0		=	Success. In $return["response"] you will find the tagdefinitions
-1		=	failed. User is not logged in
+1		=	failed. User is not logged in as masterUser
+2		=	failed. Project Directory has not been found
 3		= 	failed. tagdefinitions.json has not been found
 4		= 	failed. tagName was not submitted
  */
-function tagDelete($tagName) {
+function tagDelete($projectID,$tagName) {
 	global $conf;
 
-	$login = userCheckLogin("admin");
+	$login = superUserLogin();
 
-	if ($login["code"] != 1) {
+	if ($login["status"] == "fail") {
 		$return["status"] = "fail";
 		$return["code"] = 1;
-		$return["string"] = $login["string"];
+		$return["string"] = "User not logged in with Masterpassword";
 		return $return;
 	}
 
-	if (!file_exists($conf["dir"]["data"]."/tagdefinitions.json")) {
+	if ((!$projectID) || (!is_dir($conf["dir"]["projects"]."/".$projectID))) {
+		$return["status"] = "fail";
+		$return["code"] = 2;
+		$return["string"] = "Projects Directory not found.";
+		return $return;
+	}
+
+	if (!file_exists($conf["dir"]["projects"]."/".$projectID."/tagdefinitions.json")) {
 		$return["status"] = "fail";
 		$return["code"] = 3;
 		$return["string"] = "tagdefinitions.json has not been found.";
@@ -112,7 +130,7 @@ function tagDelete($tagName) {
 		return $return;
 	}
 
-	$file = new sharedFile($conf["dir"]["data"]."/tagdefinitions.json");
+	$file = new sharedFile($conf["dir"]["projects"]."/".$projectID."/tagdefinitions.json");
 
 	$json = $file->read();
 
@@ -120,9 +138,9 @@ function tagDelete($tagName) {
 
 	$tagFound["count"] = 0;
 
-	$hvi = json_decode(file_get_contents($conf["dir"]["data"]."/hypervideos/_index.json"),true);
+	$hvi = json_decode(file_get_contents($conf["dir"]["projects"]."/".$projectID."/_index.json"),true);
 	foreach ($hvi["hypervideos"] as $hvd) {
-		$hv = json_decode(file_get_contents($conf["dir"]["data"]."/hypervideos/".$hvd."/hypervideo.json"),true);
+		$hv = json_decode(file_get_contents($conf["dir"]["projects"]."/".$projectID."/hypervideos/".$hvd."/hypervideo.json"),true);
 		foreach($hv["contents"] as $hvc) {
 			if (in_array($tagName, $hvc["frametrail:tags"])) {
 				$tagFound["count"]++;
@@ -133,9 +151,9 @@ function tagDelete($tagName) {
 				$tagFound["matches"][] = $tagFoundTmp;
 			}
 		}
-		$ani = json_decode(file_get_contents($conf["dir"]["data"]."/hypervideos/".$hvd."/annotations/_index.json"),true);
+		$ani = json_decode(file_get_contents($conf["dir"]["projects"]."/".$projectID."/hypervideos/".$hvd."/annotations/_index.json"),true);
 		foreach($ani["annotationfiles"] as $anifk=>$anif) {
-			$anifc = json_decode(file_get_contents($conf["dir"]["data"]."/hypervideos/".$hvd."/annotations/".$anifk.".json"),true);
+			$anifc = json_decode(file_get_contents($conf["dir"]["projects"]."/".$projectID."/hypervideos/".$hvd."/annotations/".$anifk.".json"),true);
 			foreach ($anifc as $anifck=>$anifcv) {
 				if (in_array($tagName, $anifcv["frametrail:tags"])) {
 					$tagFound["count"]++;
@@ -176,15 +194,40 @@ function tagDelete($tagName) {
 
 
 /**
+ * @param $projectID
  * @param $lang
 Returning Code:
 0		=	Success. In $return["response"] you will find the tagdefinitions
-1		=	failed. User is not logged in as admin
+1		=	failed. User is not logged in as masterUser
+2		=	failed. Project Directory has not been found
 3		= 	failed. tagdefinitions.json has not been found
 4		= 	failed. lang has not 2 characters
  */
-function tagLangDelete($lang) {
+function tagLangDelete($projectID,$lang) {
 	global $conf;
+
+	$login = superUserLogin();
+
+	if ($login["status"] == "fail") {
+		$return["status"] = "fail";
+		$return["code"] = 1;
+		$return["string"] = "User not logged in with Masterpassword";
+		return $return;
+	}
+
+	if ((!$projectID) || (!is_dir($conf["dir"]["projects"]."/".$projectID))) {
+		$return["status"] = "fail";
+		$return["code"] = 2;
+		$return["string"] = "Projects Directory not found.";
+		return $return;
+	}
+
+	if (!file_exists($conf["dir"]["projects"]."/".$projectID."/tagdefinitions.json")) {
+		$return["status"] = "fail";
+		$return["code"] = 3;
+		$return["string"] = "tagdefinitions.json has not been found.";
+		return $return;
+	}
 
 	if (strlen($lang) != 2) {
 		$return["status"] = "fail";
@@ -193,26 +236,7 @@ function tagLangDelete($lang) {
 		return $return;
 	}
 
-
-	$login = userCheckLogin("admin");
-
-	if ($login["code"] != 1) {
-		$return["status"] = "fail";
-		$return["code"] = 1;
-		$return["string"] = $login["string"];
-		return $return;
-	}
-
-	if (!file_exists($conf["dir"]["data"]."/tagdefinitions.json")) {
-		$return["status"] = "fail";
-		$return["code"] = 3;
-		$return["string"] = "tagdefinitions.json has not been found.";
-		return $return;
-	}
-
-
-
-	$file = new sharedFile($conf["dir"]["data"]."/tagdefinitions.json");
+	$file = new sharedFile($conf["dir"]["projects"]."/".$projectID."/tagdefinitions.json");
 
 	$json = $file->read();
 

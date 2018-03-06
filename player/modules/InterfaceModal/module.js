@@ -118,7 +118,7 @@ FrameTrail.defineModule('InterfaceModal', function(FrameTrail){
 	}
 
 	/**
-	 * I set the loading screen title.
+	 * I set the loading screen title to either the hypervideo name or the project name.
 	 * @method setLoadingTitle
 	 * @param {String} title
 	 */

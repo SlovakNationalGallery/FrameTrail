@@ -18,7 +18,8 @@
 FrameTrail.defineModule('RouteNavigation', function(FrameTrail){
 
 
-	var hypervideoID = getQueryVariable('hypervideo'),
+	var projectID    = getQueryVariable('project'),
+		hypervideoID = getQueryVariable('hypervideo'),
 		annotationID = '',
 		hashTime     = '',
 
@@ -43,7 +44,7 @@ FrameTrail.defineModule('RouteNavigation', function(FrameTrail){
 
 	    } else {
 
-	    	return '../_data/resources/' + src;
+	    	return '../_data/projects/' + projectID + '/resources/' + src;
 
 	    }
 
@@ -215,6 +216,16 @@ FrameTrail.defineModule('RouteNavigation', function(FrameTrail){
 
 
    	return {
+
+
+   		/**
+	     * The projectID, as parsed from the query part of the URL.
+	     * @attribute projectID
+	     * @type String
+	     * @readOnly
+	     */
+	    get projectID()    {  return projectID    },
+
 
 		/**
 	     * The hypervideoID, as parsed from the query part of the URL.

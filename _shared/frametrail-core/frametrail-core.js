@@ -7,6 +7,8 @@
 
         instances    = [];
 
+
+
     window.FrameTrail = {
         defineModule: 	_defineModule,
         defineType: 	_defineType,
@@ -18,28 +20,16 @@
     };
 
 
-    function _defineModule(name, definition) {
 
-        if (typeof definition !== 'function') {
-            throw new Error('Module definition must be a function object, which returns a public interface.');
-        }
 
-        defs_modules[name] = definition;
 
-    }
 
-    function _defineType(name, definition) {
 
-        if (typeof definition !== 'function') {
-            throw new Error('Type definition must be a function object, which returns type definition { parent constructor proto }.');
-        }
-
-        defs_types[name] = definition;
-
-    }
 
 
     function _init(tmp, options) {
+
+
 
     	var FrameTrail = {
     		start: 			_start,
@@ -51,23 +41,21 @@
     		changeState: 	_changeState,
     		get types()		{ return types },
     		type: 			_type,
-    		newObject: 		_newObject,
-            triggerEvent:   triggerEvent,
-            addEventListener: addEventListener,
-            removeEventListener: removeEventListener
+    		newObject: 		_newObject
     	};
 
     	var state			= {},
     		modules 		= {},
             types           = {},
     		updateQueue 	= [],
-    		inUpdateThread  = false,
-            listeners       = {};
+    		inUpdateThread  = false;
 
 
 
         _initTypes();
         _start(tmp, options);
+
+
 
 
     	function _start(mainModule, runtimeConfig) {
@@ -79,6 +67,9 @@
     		_initModule(mainModule);
 
     	}
+
+
+
 
 
         var publicInstanceAPI = {
@@ -100,28 +91,24 @@
 
             },
 
-            play: (FrameTrail.module('HypervideoController')) ? FrameTrail.module('HypervideoController').play : null,
-            pause: (FrameTrail.module('HypervideoController')) ? FrameTrail.module('HypervideoController').pause : null,
+            play: FrameTrail.module('HypervideoController').play,
+            pause: FrameTrail.module('HypervideoController').pause,
 
             get duration()    { return FrameTrail.module('HypervideoModel').duration },
             get currentTime() { return FrameTrail.module('HypervideoController').currentTime },
-            set currentTime(aNumber) { return FrameTrail.module('HypervideoController').currentTime = aNumber },
 
-            onReady:            function (handler) { addEventListener('ready', handler) },
-            onTimeupdate:       function (handler) { addEventListener('timeupdate', handler) },
-            onSeeking:          function (handler) { addEventListener('seeking', handler) },
-            onSeeked:           function (handler) { addEventListener('seeked', handler) },
-            onPlay:             function (handler) { addEventListener('play', handler) },
-            onPlaying:          function (handler) { addEventListener('playing', handler) },
-            onPause:            function (handler) { addEventListener('pause', handler) },
-            onEnded:            function (handler) { addEventListener('ended', handler) },
-            onTimelineEvent:    function (handler) { addEventListener('timelineEvent', handler) },
-            onUserAction:       function (handler) { addEventListener('userAction', handler) },
-            on: addEventListener,
-            off: removeEventListener,
-            addEventListener: addEventListener,
-            removeEventListener: removeEventListener,
-            dispatchEvent: dispatchEvent,
+            onReady: null,
+            onTimeupdate: null,
+            onSeeking: null,
+            onSeeked: null,
+            onPlay: null,
+            onPlaying: null,
+            onPause: null,
+            onEnded: null,
+            onTimelineEvent: null,
+            onUserAction: null,
+            on: null,
+            off: null,
 
             metadata: {
                 get creator()       { return FrameTrail.module('HypervideoModel').creator },
@@ -138,20 +125,16 @@
             get codeSnippets()   { return FrameTrail.module('HypervideoModel').codeSnippets },
             get annotationSets() { return FrameTrail.module('HypervideoModel').annotationSets },
             get annotations()    { return FrameTrail.module('HypervideoModel').annotations },
-            get allAnnotations() { return FrameTrail.module('HypervideoModel').allAnnotations },
-
-            traces: {
-                startTrace:     (FrameTrail.module('UserTraces')) ? FrameTrail.module('UserTraces').startTrace : null,
-                endTrace:       (FrameTrail.module('UserTraces')) ? FrameTrail.module('UserTraces').endTrace : null,
-                addTraceEvent:  (FrameTrail.module('UserTraces')) ? FrameTrail.module('UserTraces').addTraceEvent : null,
-                deleteTraces:   (FrameTrail.module('UserTraces')) ? FrameTrail.module('UserTraces').deleteTraces : null,
-                get data()      { return FrameTrail.module('UserTraces').traces }
-            }
-
-
+            get allAnnotations() { return FrameTrail.module('HypervideoModel').allAnnotations }
         }
 
         instances.push(publicInstanceAPI);
+
+
+
+
+
+
 
 
     	function _initModule(name) {
@@ -346,47 +329,44 @@
 
     	}
 
-        function addEventListener(type, handler) {
-            if (!(type in listeners)) {
-                listeners[type] = [];
-            }
-            listeners[type].push(handler);
-        }
 
-        function removeEventListener(type, handler) {
-            if (!(type in listeners)) {
-                return;
-            }
-            var stack = listeners[type];
-            for (var i = 0; i < stack.length; i++) {
-                if (stack[i] === handler){
-                    stack.splice(i, 1);
-                    i--;
-                }
-            }
-        }
-
-        function dispatchEvent(event) {
-            if (!(event.type in listeners)) {
-                return true;
-            }
-            var stack = listeners[event.type];
-            for (var i = 0, l = stack.length; i < l; i++) {
-                stack[i].call(this, event);
-            }
-            return !event.defaultPrevented;
-        }
-
-
-        function triggerEvent(eventType, eventData) {
-            return dispatchEvent(new CustomEvent(eventType, { detail: eventData }));
-        }
 
 
         return publicInstanceAPI;
 
 
+
     }
+
+
+
+
+
+
+    function _defineModule(name, definition) {
+
+        if (typeof definition !== 'function') {
+            throw new Error('Module definition must be a function object, which returns a public interface.');
+        }
+
+        defs_modules[name] = definition;
+
+    }
+
+    function _defineType(name, definition) {
+
+        if (typeof definition !== 'function') {
+            throw new Error('Type definition must be a function object, which returns type definition { parent constructor proto }.');
+        }
+
+        defs_types[name] = definition;
+
+    }
+
+
+
+
+
 
 
 }).call(this);

@@ -65,7 +65,7 @@ FrameTrail.defineType(
                         width: 640 + 'px',
                         height: 400 + 'px'
                     }, 300, function() {
-                        var previewDialog   = $('<div class="resourcePreviewDialog" title="'+ ((self.resourceData.type == 'text') ? '' : self.resourceData.name) +'"></div>')
+                        var previewDialog   = $('<div class="resourcePreviewDialog" title="'+ self.resourceData.name +'"></div>')
                             .append(self.renderContent());
 
                         previewDialog.dialog({
@@ -141,61 +141,56 @@ FrameTrail.defineType(
                                             + '    <input class="positionWidth" value="' + overlay.data.position.width + '">'
                                             + '    <input class="positionHeight" value="' + overlay.data.position.height + '">'
                                             + '</div>'
-                                            + '<div class="overlayOptionsWrapper">'
-                                            + '    <div class="overlayOptionsTabs">'
-                                            + '        <ul>'
-                                            + '            <li><a href="#OverlayOptions">Options</a></li>'
-                                            + '            <li><a href="#OverlayAppearance">Appearance</a></li>'
-                                            + '            <li class="ui-tabs-right"><a href="#ActionOnEnd">onEnd</a></li>'
-                                            + '            <li class="ui-tabs-right"><a href="#ActionOnStart">onStart</a></li>'
-                                            + '            <li class="ui-tabs-right"><a href="#ActionOnClick">onClick</a></li>'
-                                            + '            <li class="ui-tabs-right"><a href="#ActionOnReady">onReady</a></li>'
-                                            + '            <li class="ui-tabs-right tab-label">Actions: </li>'
-                                            + '        </ul>'
-                                            + '        <div id="OverlayOptions"></div>'
-                                            + '        <div id="OverlayAppearance">'
-                                            + '            <div style="clear: both;">Opacity</div>'
-                                            + '            <div class="opacitySlider"></div>'
-                                            //+ '            <div>Arrange</div>'
-                                            //+ '            <button class="arrangeTop">Move to top</button>'
-                                            //+ '            <button class="arrangeBottom">Move to bottom</button>'
-                                            + '        </div>'
-                                            + '        <div id="ActionOnReady">'
-                                            + '            <textarea class="onReadyAction codeTextarea" data-eventname="onReady">' + (overlay.data.events.onReady ? overlay.data.events.onReady : '') + '</textarea>'
-                                            + '            <button class="executeActionCode">Test Code</button>'
-                                            + '            <div class="message active">"this" contains the current overlay object (data, ui elements & states). Example: console.log(this.overlayElement).</div>'
-                                            + '        </div>'
-                                            + '        <div id="ActionOnClick">'
-                                            + '            <textarea class="onClickAction codeTextarea" data-eventname="onClick">' + (overlay.data.events.onClick ? overlay.data.events.onClick : '') + '</textarea>'
-                                            + '            <button class="executeActionCode">Test Code</button>'
-                                            + '            <div class="message active">"this" contains the current overlay object (data, ui elements & states). Example: console.log(this.overlayElement).</div>'
-                                            + '        </div>'
-                                            + '        <div id="ActionOnStart">'
-                                            + '            <textarea class="onStartAction codeTextarea" data-eventname="onStart">' + (overlay.data.events.onStart ? overlay.data.events.onStart : '') + '</textarea>'
-                                            + '            <button class="executeActionCode">Test Code</button>'
-                                            + '            <div class="message active">"this" contains the current overlay object (data, ui elements & states). Example: console.log(this.overlayElement).</div>'
-                                            + '        </div>'
-                                            + '        <div id="ActionOnEnd">'
-                                            + '            <textarea class="onEndAction codeTextarea" data-eventname="onEnd">' + (overlay.data.events.onEnd ? overlay.data.events.onEnd : '') + '</textarea>'
-                                            + '            <button class="executeActionCode">Test Code</button>'
-                                            + '            <div class="message active">"this" contains the current overlay object (data, ui elements & states). Example: console.log(this.overlayElement).</div>'
-                                            + '        </div>'
+                                            + '<div class="overlayOptionsTabs">'
+                                            + '    <ul>'
+                                            + '        <li><a href="#OverlayOptions">Options</a></li>'
+                                            + '        <li><a href="#OverlayAppearance">Appearance</a></li>'
+                                            + '        <li class="ui-tabs-right"><a href="#ActionOnEnd">onEnd</a></li>'
+                                            + '        <li class="ui-tabs-right"><a href="#ActionOnStart">onStart</a></li>'
+                                            + '        <li class="ui-tabs-right"><a href="#ActionOnClick">onClick</a></li>'
+                                            + '        <li class="ui-tabs-right"><a href="#ActionOnReady">onReady</a></li>'
+                                            + '        <li class="ui-tabs-right tab-label">Actions: </li>'
+                                            + '    </ul>'
+                                            + '    <div id="OverlayOptions"></div>'
+                                            + '    <div id="OverlayAppearance">'
+                                            + '        <div style="clear: both;">Opacity</div>'
+                                            + '        <div class="opacitySlider"></div>'
+                                            //+ '        <div>Arrange</div>'
+                                            //+ '        <button class="arrangeTop">Move to top</button>'
+                                            //+ '        <button class="arrangeBottom">Move to bottom</button>'
+                                            + '    </div>'
+                                            + '    <div id="ActionOnReady">'
+                                            + '        <textarea class="onReadyAction codeTextarea" data-eventname="onReady">' + (overlay.data.events.onReady ? overlay.data.events.onReady : '') + '</textarea>'
+                                            + '        <button class="executeActionCode">Run Code</button>'
+                                            + '        <div class="message active">"this" contains the current overlay object (data, ui elements & states). Example: console.log(this.overlayElement).</div>'
+                                            + '    </div>'
+                                            + '    <div id="ActionOnClick">'
+                                            + '        <textarea class="onClickAction codeTextarea" data-eventname="onClick">' + (overlay.data.events.onClick ? overlay.data.events.onClick : '') + '</textarea>'
+                                            + '        <button class="executeActionCode">Run Code</button>'
+                                            + '        <div class="message active">"this" contains the current overlay object (data, ui elements & states). Example: console.log(this.overlayElement).</div>'
+                                            + '    </div>'
+                                            + '    <div id="ActionOnStart">'
+                                            + '        <textarea class="onStartAction codeTextarea" data-eventname="onStart">' + (overlay.data.events.onStart ? overlay.data.events.onStart : '') + '</textarea>'
+                                            + '        <button class="executeActionCode">Run Code</button>'
+                                            + '        <div class="message active">"this" contains the current overlay object (data, ui elements & states). Example: console.log(this.overlayElement).</div>'
+                                            + '    </div>'
+                                            + '    <div id="ActionOnEnd">'
+                                            + '        <textarea class="onEndAction codeTextarea" data-eventname="onEnd">' + (overlay.data.events.onEnd ? overlay.data.events.onEnd : '') + '</textarea>'
+                                            + '        <button class="executeActionCode">Run Code</button>'
+                                            + '        <div class="message active">"this" contains the current overlay object (data, ui elements & states). Example: console.log(this.overlayElement).</div>'
                                             + '    </div>'
                                             + '</div>');
 
                     controlsContainer.append(defaultControls);
 
                     controlsContainer.find('.overlayOptionsTabs').tabs({
-                        heightStyle: 'fill',
+                        heightStyle: 'auto',
                         activate: function(event, ui) {
-                            controlsContainer.find('.overlayOptionsTabs').tabs('refresh');
                             if (ui.newPanel.find('.CodeMirror').length != 0) {
                                 ui.newPanel.find('.CodeMirror')[0].CodeMirror.refresh();
                             }
                         }
                     });
-
-                    var oldOverlayData;
 
                     controlsContainer.find('#TimeStart').spinner({
                         step: 0.1,
@@ -205,8 +200,6 @@ FrameTrail.defineType(
                         icons: { down: "icon-angle-down", up: "icon-angle-up" },
                         create: function(evt, ui) {
                         	$(evt.target).parent().attr('data-input-id', $(evt.target).attr('id'));
-
-                            oldOverlayData = jQuery.extend({}, overlay.data);
                         },
                         spin: function(evt, ui) {
 
@@ -215,18 +208,6 @@ FrameTrail.defineType(
                                 overlay.updateTimelineElement();
                                 FrameTrail.module('HypervideoController').currentTime = overlay.data.start;
                                 FrameTrail.module('HypervideoModel').newUnsavedChange('overlays');
-
-                                FrameTrail.triggerEvent('userAction', {
-                                    action: 'OverlayChange',
-                                    overlay: overlay.data,
-                                    changes: [
-                                        {
-                                            property: 'start',
-                                            oldValue: oldOverlayData.start,
-                                            newValue: overlay.data.start
-                                        }
-                                    ]
-                                });
                             }
 
 
@@ -240,18 +221,6 @@ FrameTrail.defineType(
                                 FrameTrail.module('HypervideoController').currentTime = overlay.data.start;
                                 FrameTrail.module('OverlaysController').stackTimelineView();
                                 FrameTrail.module('HypervideoModel').newUnsavedChange('overlays');
-
-                                FrameTrail.triggerEvent('userAction', {
-                                    action: 'OverlayChange',
-                                    overlay: overlay.data,
-                                    changes: [
-                                        {
-                                            property: 'start',
-                                            oldValue: oldOverlayData.start,
-                                            newValue: overlay.data.start
-                                        }
-                                    ]
-                                });
                             }
 
                         }
@@ -265,8 +234,6 @@ FrameTrail.defineType(
                         icons: { down: "icon-angle-down", up: "icon-angle-up" },
                         create: function(evt, ui) {
                         	$(evt.target).parent().attr('data-input-id', $(evt.target).attr('id'));
-
-                            oldOverlayData = jQuery.extend({}, overlay.data);
                         },
                         spin: function(evt, ui) {
 
@@ -275,18 +242,6 @@ FrameTrail.defineType(
                                 overlay.updateTimelineElement();
                                 FrameTrail.module('HypervideoController').currentTime = overlay.data.end;
                                 FrameTrail.module('HypervideoModel').newUnsavedChange('overlays');
-
-                                FrameTrail.triggerEvent('userAction', {
-                                    action: 'OverlayChange',
-                                    overlay: overlay.data,
-                                    changes: [
-                                        {
-                                            property: 'end',
-                                            oldValue: oldOverlayData.end,
-                                            newValue: overlay.data.end
-                                        }
-                                    ]
-                                });
                             }
 
                         },
@@ -298,18 +253,6 @@ FrameTrail.defineType(
                                 FrameTrail.module('HypervideoController').currentTime = overlay.data.end;
                                 FrameTrail.module('OverlaysController').stackTimelineView();
                                 FrameTrail.module('HypervideoModel').newUnsavedChange('overlays');
-
-                                FrameTrail.triggerEvent('userAction', {
-                                    action: 'OverlayChange',
-                                    overlay: overlay.data,
-                                    changes: [
-                                        {
-                                            property: 'end',
-                                            oldValue: oldOverlayData.end,
-                                            newValue: overlay.data.end
-                                        }
-                                    ]
-                                });
                             }
 
                         }
@@ -321,8 +264,6 @@ FrameTrail.defineType(
                         icons: { down: "icon-angle-down", up: "icon-angle-up" },
                         create: function(evt, ui) {
                         	$(evt.target).parent().attr('data-input-id', 'PositionTop');
-
-                            oldOverlayData = jQuery.extend({}, overlay.data);
                         },
                         spin: function(evt, ui) {
 
@@ -330,18 +271,6 @@ FrameTrail.defineType(
                                 overlay.data.position.top = ui.value;
                                 overlay.updateOverlayElement();
                                 FrameTrail.module('HypervideoModel').newUnsavedChange('overlays');
-
-                                FrameTrail.triggerEvent('userAction', {
-                                    action: 'OverlayChange',
-                                    overlay: overlay.data,
-                                    changes: [
-                                        {
-                                            property: 'position.top',
-                                            oldValue: oldOverlayData.position.top,
-                                            newValue: overlay.data.position.top
-                                        }
-                                    ]
-                                });
                             }
 
                         },
@@ -351,18 +280,6 @@ FrameTrail.defineType(
                                 overlay.data.position.top = $(evt.target).val();
                                 overlay.updateOverlayElement();
                                 FrameTrail.module('HypervideoModel').newUnsavedChange('overlays');
-
-                                FrameTrail.triggerEvent('userAction', {
-                                    action: 'OverlayChange',
-                                    overlay: overlay.data,
-                                    changes: [
-                                        {
-                                            property: 'position.top',
-                                            oldValue: oldOverlayData.position.top,
-                                            newValue: overlay.data.position.top
-                                        }
-                                    ]
-                                });
                             }
 
                         }
@@ -374,8 +291,6 @@ FrameTrail.defineType(
                         icons: { down: "icon-angle-down", up: "icon-angle-up" },
                         create: function(evt, ui) {
                         	$(evt.target).parent().attr('data-input-id', 'PositionLeft');
-
-                            oldOverlayData = jQuery.extend({}, overlay.data);
                         },
                         spin: function(evt, ui) {
 
@@ -383,18 +298,6 @@ FrameTrail.defineType(
                                 overlay.data.position.left = ui.value;
                                 overlay.updateOverlayElement();
                                 FrameTrail.module('HypervideoModel').newUnsavedChange('overlays');
-
-                                FrameTrail.triggerEvent('userAction', {
-                                    action: 'OverlayChange',
-                                    overlay: overlay.data,
-                                    changes: [
-                                        {
-                                            property: 'position.left',
-                                            oldValue: oldOverlayData.position.left,
-                                            newValue: overlay.data.position.left
-                                        }
-                                    ]
-                                });
                             }
 
                         },
@@ -404,18 +307,6 @@ FrameTrail.defineType(
                                 overlay.data.position.left = $(evt.target).val();
                                 overlay.updateOverlayElement();
                                 FrameTrail.module('HypervideoModel').newUnsavedChange('overlays');
-
-                                FrameTrail.triggerEvent('userAction', {
-                                    action: 'OverlayChange',
-                                    overlay: overlay.data,
-                                    changes: [
-                                        {
-                                            property: 'position.left',
-                                            oldValue: oldOverlayData.position.left,
-                                            newValue: overlay.data.position.left
-                                        }
-                                    ]
-                                });
                             }
 
                         }
@@ -427,8 +318,6 @@ FrameTrail.defineType(
                         icons: { down: "icon-angle-down", up: "icon-angle-up" },
                         create: function(evt, ui) {
                         	$(evt.target).parent().attr('data-input-id', 'PositionWidth');
-
-                            oldOverlayData = jQuery.extend({}, overlay.data);
                         },
                         spin: function(evt, ui) {
 
@@ -436,18 +325,6 @@ FrameTrail.defineType(
                                 overlay.data.position.width = ui.value;
                                 overlay.updateOverlayElement();
                                 FrameTrail.module('HypervideoModel').newUnsavedChange('overlays');
-
-                                FrameTrail.triggerEvent('userAction', {
-                                    action: 'OverlayChange',
-                                    overlay: overlay.data,
-                                    changes: [
-                                        {
-                                            property: 'position.width',
-                                            oldValue: oldOverlayData.position.width,
-                                            newValue: overlay.data.position.width
-                                        }
-                                    ]
-                                });
                             }
 
                         },
@@ -457,18 +334,6 @@ FrameTrail.defineType(
                                 overlay.data.position.width = $(evt.target).val();
                                 overlay.updateOverlayElement();
                                 FrameTrail.module('HypervideoModel').newUnsavedChange('overlays');
-
-                                FrameTrail.triggerEvent('userAction', {
-                                    action: 'OverlayChange',
-                                    overlay: overlay.data,
-                                    changes: [
-                                        {
-                                            property: 'position.width',
-                                            oldValue: oldOverlayData.position.width,
-                                            newValue: overlay.data.position.width
-                                        }
-                                    ]
-                                });
                             }
 
                         }
@@ -480,8 +345,6 @@ FrameTrail.defineType(
                         icons: { down: "icon-angle-down", up: "icon-angle-up" },
                         create: function(evt, ui) {
                         	$(evt.target).parent().attr('data-input-id', 'PositionHeight');
-
-                            oldOverlayData = jQuery.extend({}, overlay.data);
                         },
                         spin: function(evt, ui) {
 
@@ -489,18 +352,6 @@ FrameTrail.defineType(
                                 overlay.data.position.height = ui.value;
                                 overlay.updateOverlayElement();
                                 FrameTrail.module('HypervideoModel').newUnsavedChange('overlays');
-
-                                FrameTrail.triggerEvent('userAction', {
-                                    action: 'OverlayChange',
-                                    overlay: overlay.data,
-                                    changes: [
-                                        {
-                                            property: 'position.height',
-                                            oldValue: oldOverlayData.position.height,
-                                            newValue: overlay.data.position.height
-                                        }
-                                    ]
-                                });
                             }
 
                         },
@@ -510,18 +361,6 @@ FrameTrail.defineType(
                                 overlay.data.position.height = $(evt.target).val();
                                 overlay.updateOverlayElement();
                                 FrameTrail.module('HypervideoModel').newUnsavedChange('overlays');
-
-                                FrameTrail.triggerEvent('userAction', {
-                                    action: 'OverlayChange',
-                                    overlay: overlay.data,
-                                    changes: [
-                                        {
-                                            property: 'position.height',
-                                            oldValue: oldOverlayData.position.height,
-                                            newValue: overlay.data.position.height
-                                        }
-                                    ]
-                                });
                             }
 
                         }
@@ -591,7 +430,7 @@ FrameTrail.defineType(
 
                             FrameTrail.module('HypervideoModel').newUnsavedChange('overlays');
                         });
-                        codeEditor.setSize(null, 'calc(100% - 40px)');
+                        codeEditor.setSize(null, 124);
                     }
 
                     controlsContainer.find('.executeActionCode').click(function(evt) {
@@ -669,43 +508,22 @@ FrameTrail.defineType(
                                             + '    <label for="TimeEnd">End</label>'
                                             + '    <input id="TimeEnd" value="' + annotation.data.end + '">'
                                             + '</div>'),
-                        thumbContainer    = $('<div class="previewThumbContainer"></div>');
-
-                    var annotationOptions = $('<div class="annotationOptionsWrapper">'
-                                            + '    <div class="annotationOptionsTabs">'
-                                            + '        <ul>'
-                                            + '            <li><a href="#AnnotationOptions">Options</a></li>'
-                                            + '            <li><a href="#TagOptions">Tags</a></li>'
-                                            + '        </ul>'
-                                            + '        <div id="AnnotationOptions"></div>'
-                                            + '        <div id="TagOptions">'
-                                            + '            <label>Manage Tags:</label>'
-                                            + '            <div class="existingTags"></div>'
-                                            + '            <div class="button small contextSelectButton newTagButton">'
-                                            + '                <span class="icon-plus">Add</span>'
-                                            + '                <div class="contextSelectList"></div>'
-                                            + '            </div>'
-                                            + '        </div>'
+                        thumbContainer    = $('<div class="previewThumbContainer"></div>'),
+                        tagManagementUI   = $('<div class="tagManagementUI">'
+                                            + '    <hr>'
+                                            + '    <label>Manage Tags:</label>'
+                                            + '    <div class="existingTags"></div>'
+                                            + '    <div class="button small contextSelectButton newTagButton">'
+                                            + '        <span class="icon-plus">Add</span>'
+                                            + '        <div class="contextSelectList"></div>'
                                             + '    </div>'
                                             + '</div>');
 
                     thumbContainer.append(annotation.resourceItem.renderThumb());
 
-                    controlsContainer.append(defaultControls, thumbContainer, annotationOptions);
-
-                    controlsContainer.find('.annotationOptionsTabs').tabs({
-                        heightStyle: 'fill',
-                        activate: function(event, ui) {
-                            controlsContainer.find('.annotationOptionsTabs').tabs('refresh');
-                            if (ui.newPanel.find('.CodeMirror').length != 0) {
-                                ui.newPanel.find('.CodeMirror')[0].CodeMirror.refresh();
-                            }
-                        }
-                    });
+                    controlsContainer.append(defaultControls, thumbContainer, tagManagementUI);
 
                     // Tag Management
-
-                    var tagManagementUI = annotationOptions.find('#TagOptions');
 
                     updateExistingTags();
 
@@ -770,8 +588,6 @@ FrameTrail.defineType(
 
                     // Timing
 
-                    var oldAnnotationData;
-
                     controlsContainer.find('#TimeStart').spinner({
                         step: 0.1,
                         min: 0,
@@ -780,8 +596,6 @@ FrameTrail.defineType(
                         icons: { down: "icon-angle-down", up: "icon-angle-up" },
                         create: function(evt, ui) {
                             $(evt.target).parent().attr('data-input-id', $(evt.target).attr('id'));
-
-                            oldAnnotationData = jQuery.extend({}, annotation.data);
                         },
                         spin: function(evt, ui) {
 
@@ -790,18 +604,6 @@ FrameTrail.defineType(
                                 annotation.updateTimelineElement();
                                 FrameTrail.module('HypervideoController').currentTime = annotation.data.start;
                                 FrameTrail.module('HypervideoModel').newUnsavedChange('annotations');
-
-                                FrameTrail.triggerEvent('userAction', {
-                                    action: 'AnnotationChange',
-                                    annotation: annotation.data,
-                                    changes: [
-                                        {
-                                            property: 'start',
-                                            oldValue: oldAnnotationData.start,
-                                            newValue: annotation.data.start
-                                        }
-                                    ]
-                                });
                             }
 
 
@@ -815,18 +617,6 @@ FrameTrail.defineType(
                                 FrameTrail.module('HypervideoController').currentTime = annotation.data.start;
                                 FrameTrail.module('AnnotationsController').stackTimelineView();
                                 FrameTrail.module('HypervideoModel').newUnsavedChange('annotations');
-
-                                FrameTrail.triggerEvent('userAction', {
-                                    action: 'AnnotationChange',
-                                    annotation: annotation.data,
-                                    changes: [
-                                        {
-                                            property: 'start',
-                                            oldValue: oldAnnotationData.start,
-                                            newValue: annotation.data.start
-                                        }
-                                    ]
-                                });
                             }
 
                         }
@@ -840,8 +630,6 @@ FrameTrail.defineType(
                         icons: { down: "icon-angle-down", up: "icon-angle-up" },
                         create: function(evt, ui) {
                             $(evt.target).parent().attr('data-input-id', $(evt.target).attr('id'));
-
-                            oldAnnotationData = jQuery.extend({}, annotation.data);
                         },
                         spin: function(evt, ui) {
 
@@ -850,18 +638,6 @@ FrameTrail.defineType(
                                 annotation.updateTimelineElement();
                                 FrameTrail.module('HypervideoController').currentTime = annotation.data.end;
                                 FrameTrail.module('HypervideoModel').newUnsavedChange('annotations');
-
-                                FrameTrail.triggerEvent('userAction', {
-                                    action: 'AnnotationChange',
-                                    annotation: annotation.data,
-                                    changes: [
-                                        {
-                                            property: 'end',
-                                            oldValue: oldAnnotationData.end,
-                                            newValue: annotation.data.end
-                                        }
-                                    ]
-                                });
                             }
 
                         },
@@ -873,18 +649,6 @@ FrameTrail.defineType(
                                 FrameTrail.module('HypervideoController').currentTime = annotation.data.end;
                                 FrameTrail.module('AnnotationsController').stackTimelineView();
                                 FrameTrail.module('HypervideoModel').newUnsavedChange('annotations');
-
-                                FrameTrail.triggerEvent('userAction', {
-                                    action: 'AnnotationChange',
-                                    annotation: annotation.data,
-                                    changes: [
-                                        {
-                                            property: 'end',
-                                            oldValue: oldAnnotationData.end,
-                                            newValue: annotation.data.end
-                                        }
-                                    ]
-                                });
                             }
 
                         }

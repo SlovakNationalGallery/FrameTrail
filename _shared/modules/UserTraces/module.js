@@ -21,214 +21,37 @@ FrameTrail.defineModule('UserTraces', function(FrameTrail){
 		currentSessionID = null;
 
 	/**
-	 * I init saved traces from localstorage.
+	 * I init saved sessions from localstorage.
 	 *
-	 * @method initTraces
+	 * @method initSessions
 	 * @return 
 	 */
-	function initTraces() {
-		
-		if (!FrameTrail.module('Database').config.captureUserTraces) {
-			return false;
-		}
-		
-		FrameTrail.addEventListener('userAction', function(evt) {
-			if (evt.detail.action == FrameTrail.module('Database').config.userTracesStartAction) {
-				startTrace();
-			} else if (evt.detail.action == FrameTrail.module('Database').config.userTracesEndAction) {
-				addTraceEvent(evt.detail.action);
-				endTrace();
-			}
-		});
-		
-		// Add events / actions to be traced
-
-		FrameTrail.addEventListener('play', function(evt) {
-			addTraceEvent('VideoPlay');
-		});
-
-		FrameTrail.addEventListener('pause', function(evt) {
-			addTraceEvent('VideoPause');
-		});
-
-		FrameTrail.addEventListener('userAction', function(evt) {
-			var attributes = {};
-
-			// clean objects
-			if (evt.detail.annotation) {
-				var newObject = {};
-
-				newObject.name = evt.detail.annotation.name;
-				newObject.type = evt.detail.annotation.type;
-				newObject.start = evt.detail.annotation.start;
-				newObject.end = evt.detail.annotation.end;
-				
-				if (evt.detail.annotation.type == 'text') {
-					newObject.text = evt.detail.annotation.attributes.text;
-				} else if (evt.detail.annotation.src) {
-					newObject.source = evt.detail.annotation.src;
-				}
-				evt.detail.annotation = newObject;
-			} else if (evt.detail.overlay) {
-				var newObject = {};
-
-				newObject.name = evt.detail.overlay.name;
-				newObject.type = evt.detail.overlay.type;
-				newObject.start = evt.detail.overlay.start;
-				newObject.end = evt.detail.overlay.end;
-				
-				if (evt.detail.overlay.type == 'text') {
-					newObject.text = evt.detail.overlay.attributes.text;
-				} else if (evt.detail.overlay.src) {
-					newObject.source = evt.detail.overlay.src;
-				}
-				evt.detail.overlay = newObject;
-			}
-
-			switch(evt.detail.action) {
-				case 'VideoJumpTime':
-					if (evt.detail.fromTime > evt.detail.toTime) {
-						evt.detail.action = 'VideoJumpBackward';
-					} else {
-						evt.detail.action = 'VideoJumpForward';
-					}
-					attributes.fromTime = evt.detail.fromTime;
-					attributes.toTime = evt.detail.toTime;
-					attributes.secondsDistance = Math.round(Math.abs(evt.detail.toTime - evt.detail.fromTime));
-					break;
-				case 'UserLogin':
-					attributes.userID = evt.detail.userID;
-					attributes.userName = evt.detail.userName;
-					attributes.userRole = evt.detail.userRole;
-					attributes.userMail = evt.detail.userMail;
-					break;
-				case 'UserLogout':
-					//
-					break;
-				case 'AnnotationOpen':
-					attributes.annotation = evt.detail.annotation;
-					break;
-				case 'AnnotationAdd':
-					attributes.annotation = evt.detail.annotation;
-					break;
-				case 'AnnotationChange':
-					if (evt.detail.changes[0].property == 'attributes.text') {
-						evt.detail.action = 'AnnotationChangeText';
-					} else {
-						evt.detail.action = 'AnnotationChangeTime';
-					}
-					attributes.annotation = evt.detail.annotation;
-					attributes.changes = evt.detail.changes;
-					break;
-				case 'AnnotationDelete':
-					attributes.annotation = evt.detail.annotation;
-					break;
-				case 'OverlayAdd':
-					attributes.overlay = evt.detail.overlay;
-					break;
-				case 'OverlayChange':
-					attributes.overlay = evt.detail.overlay;
-					attributes.changes = evt.detail.changes;
-					break;
-				case 'OverlayDelete':
-					attributes.overlay = evt.detail.overlay;
-					break;
-				case 'CodeSnippetAdd':
-					attributes.codesnippet = evt.detail.codesnippet;
-					break;
-				case 'CodeSnippetChange':
-					attributes.codesnippet = evt.detail.codesnippet;
-					attributes.changes = evt.detail.changes;
-					break;
-				case 'CodeSnippetDelete':
-					attributes.codesnippet = evt.detail.codesnippet;
-					break;
-				case 'EditStart':
-					//
-					break;
-				case 'EditSave':
-					//
-					break;
-				case 'EditEnd':
-					//
-					break;
-				case 'WaitStart':
-					//
-					break;
-				case 'WaitEnd':
-					//
-					break;
-				default:
-					// default case
-			}
-			addTraceEvent(evt.detail.action, attributes);
-		});
-
-		// Init saved traces
-
-		var savedTraces = localStorage.getItem('frametrail-traces');
-		
-		if (savedTraces) {
-			sessions = JSON.parse(savedTraces);
-		} else {
-			sessions = {
-				1516793040278: {
-					'sessionStartTime': 1516793040278,
-					'sessionEndTime': 1516800014980,
-					'duration': null,
-					'user': null,
-					'traces': []
-				},
-				1516800014986: {
-					'sessionStartTime': 1516800014986,
-					'sessionEndTime': null,
-					'duration': null,
-					'user': null,
-					'traces': []
-				}
+	function initSessions() {
+		sessions = {
+			1516793040278: {
+				'sessionStartTime': 1516793040278,
+				'sessionEndTime': 1516800014980,
+				'duration': null,
+				'user': null
+				'traces': []
+			},
+			1516800014986: {
+				'sessionStartTime': 1516800014986,
+				'sessionEndTime': null,
+				'duration': null,
+				'user': null
+				'traces': []
 			}
 		}
-
-	}
-
-	/**
-	 * I save all traces in localstorage.
-	 *
-	 * @method saveTraces
-	 * @return 
-	 */
-	function saveTraces() {
-		
-		localStorage.setItem('frametrail-traces', JSON.stringify(sessions));
-
-	}
-
-	/**
-	 * I delete all traces from localstorage.
-	 *
-	 * @method deleteTraces
-	 * @return 
-	 */
-	function deleteTraces() {
-		
-		localStorage.removeItem('frametrail-traces');
-		
 	}
 
 	/**
 	 * I start a session trace.
 	 *
-	 * @method startTrace
+	 * @method startSession
 	 * @return 
 	 */
-	function startTrace() {
-
-		if (!FrameTrail.module('Database').config.captureUserTraces) {
-			console.warn('Could not start user trace. Capturing user traces not allowed.');
-			return false;
-		}
-
-		//console.log('Start Trace');
+	function startSession() {
 
 		var sessionID = Date.now(),
 			sessionData = {
@@ -248,17 +71,10 @@ FrameTrail.defineModule('UserTraces', function(FrameTrail){
 	/**
 	 * I end a session trace.
 	 *
-	 * @method endTrace
+	 * @method endSession
 	 * @return 
 	 */
-	function endTrace() {
-
-		if (!currentSessionID) {
-			console.warn('Could not end user trace. Please start a session first.');
-			return;
-		}
-
-		//console.log('EndTrace');
+	function endSession() {
 
 		var timeNow = Date.now(),
 			sessionTime = getTimeDifference(sessions[currentSessionID].sessionStartTime, timeNow);
@@ -267,8 +83,6 @@ FrameTrail.defineModule('UserTraces', function(FrameTrail){
 		sessions[currentSessionID].duration = sessionTime.hours +':'+ sessionTime.minutes +':'+ sessionTime.seconds;
 
 		currentSessionID = null;
-
-		saveTraces();
 
 	}
 
@@ -283,7 +97,7 @@ FrameTrail.defineModule('UserTraces', function(FrameTrail){
 	function addTraceEvent(traceType, attributes) {
 
 		if (!currentSessionID) {
-			console.warn('Could not add trace event. Please start session first.');
+			console.log('Could not add trace event. Please start session first.');
 			return;
 		}
 
@@ -308,8 +122,6 @@ FrameTrail.defineModule('UserTraces', function(FrameTrail){
 		if (FrameTrail.module('UserManagement').userID.length > 0) {
 			sessions[currentSessionID].user = FrameTrail.module('UserManagement').userID;
 		}
-
-		//console.log(traceData);
 
 		sessions[currentSessionID].traces.push(traceData);
 		
@@ -355,26 +167,24 @@ FrameTrail.defineModule('UserTraces', function(FrameTrail){
 		var secondsDifference = Math.floor(difference/1000);
 
 		return {
-			'hours': (hoursDifference >= 10) ? hoursDifference : '0' + hoursDifference,
-			'minutes': (minutesDifference >= 10) ? minutesDifference : '0' + minutesDifference,
-			'seconds': (secondsDifference >= 10) ? secondsDifference : '0' + secondsDifference
+			'hours': hoursDifference,
+			'minutes': minutesDifference,
+			'seconds': secondsDifference
 		}
 
 	}
 	
 	return {
 
-		initTraces: 		initTraces,
-		startTrace: 		startTrace,
-		endTrace: 			endTrace,
-		addTraceEvent: 		addTraceEvent,
-		deleteTraces: 		deleteTraces,
+		startSession: 		startSession,
+		endSession: 		endSession,
+		addTraceEvent: 		addTraceEvent
 
 		/**
-		 * The current trace session data.
-		 * @attribute traces
+		 * The current session data.
+		 * @attribute sessionData
 		 */
-		get traces()    { return getTraceData() }
+		get traceData()    { return getTraceData() },
 
 	};
 

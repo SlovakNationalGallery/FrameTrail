@@ -493,13 +493,11 @@ FrameTrail.defineType(
                     var self = this,
                         OverlaysController = FrameTrail.module('OverlaysController');
 
-                    window.setTimeout(function() {
-                        self.makeTimelineElementDraggable();
-                        self.makeTimelineElementResizeable();
+                    this.makeTimelineElementDraggable();
+                    this.makeTimelineElementResizeable();
 
-                        self.makeOverlayElementDraggable();
-                        self.makeOverlayElementResizeable();
-                    }, 50);
+                    this.makeOverlayElementDraggable();
+                    this.makeOverlayElementResizeable();
 
                     this.timelineElement.on('click.edit', putInFocus);
                     this.overlayElement.on('click.edit', putInFocus);

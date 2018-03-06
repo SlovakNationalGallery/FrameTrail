@@ -56,6 +56,7 @@ FrameTrail.defineModule('ViewOverview', function(FrameTrail){
             thumb,
             owner,
             admin = FrameTrail.module('UserManagement').userRole === 'admin',
+            projectID = FrameTrail.module('RouteNavigation').projectID,
             editMode = FrameTrail.getState('editMode');
             userColor = FrameTrail.getState('userColor');
 
@@ -136,7 +137,7 @@ FrameTrail.defineModule('ViewOverview', function(FrameTrail){
 
                                         history.pushState({
                                             editMode: FrameTrail.getState('editMode')
-                                        }, "", "?hypervideo=" + newHypervideoID);
+                                        }, "", "?project=" + FrameTrail.module('RouteNavigation').projectID + "&hypervideo=" + newHypervideoID);
 
                                         FrameTrail.changeState('editMode', false);
 
@@ -175,7 +176,7 @@ FrameTrail.defineModule('ViewOverview', function(FrameTrail){
 
                             history.pushState({
                                 editMode: FrameTrail.getState('editMode')
-                            }, "", "?hypervideo=" + newHypervideoID);
+                            }, "", "?project=" + FrameTrail.module('RouteNavigation').projectID + "&hypervideo=" + newHypervideoID);
 
                             if ( FrameTrail.getState('editMode') ) {
 
@@ -362,7 +363,7 @@ FrameTrail.defineModule('ViewOverview', function(FrameTrail){
             listWidthState = false;
             changeViewSize();
             domElement.addClass('active');
-            FrameTrail.module('Titlebar').title = 'Overview';
+            FrameTrail.module('Titlebar').title = FrameTrail.module('Database').project.name;
         } else if (viewMode != 'resources') {
             domElement.removeClass('active');
         }

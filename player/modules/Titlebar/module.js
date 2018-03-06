@@ -16,7 +16,8 @@
 FrameTrail.defineModule('Titlebar', function(FrameTrail){
 
 
-    var domElement = $(   '<div class="titlebar">'
+    var projectID = FrameTrail.module('RouteNavigation').projectID,
+        domElement = $(   '<div class="titlebar">'
                             + '  <div class="sidebarToggleWidget" class=""><button class="sidebarToggleButton"><span class="icon-menu"></span></button></div>'
                             + '  <div class="titlebarViewMode">'
                             + '      <button data-viewmode="overview" data-tooltip-bottom-left="Overview"><span class="icon-overview"></span></button>'
@@ -48,10 +49,6 @@ FrameTrail.defineModule('Titlebar', function(FrameTrail){
             function(){
 
                 FrameTrail.changeState('editMode', 'preview');
-
-                FrameTrail.triggerEvent('userAction', {
-                    action: 'EditStart'
-                });
 
             },
             function(){ /* Start edit mode canceled */ }
@@ -86,10 +83,10 @@ FrameTrail.defineModule('Titlebar', function(FrameTrail){
 
         var RouteNavigation = FrameTrail.module('RouteNavigation'),
             baseUrl = window.location.href.split('?'),
-            url = baseUrl[0] + '?',
+            url = baseUrl[0] + '?project=' + projectID,
             secUrl = '//'+ window.location.host + window.location.pathname,
-            iframeUrl = secUrl + '?',
-            label = 'Site';
+            iframeUrl = secUrl + '?project=' + projectID,
+            label = 'Project';
 
         if ( FrameTrail.getState('viewMode') == 'video' && RouteNavigation.hypervideoID ) {
             url += '&hypervideo='+ RouteNavigation.hypervideoID;
@@ -143,13 +140,41 @@ FrameTrail.defineModule('Titlebar', function(FrameTrail){
                         + '        <div class="formColumn column2">'
                         + '            <label for="name">Hypervideo Name</label>'
                         + '            <input type="text" name="name" placeholder="Name" value=""><br>'
-                        + '            <input type="checkbox" name="hidden" id="hypervideo_hidden" value="hidden" '+((FrameTrail.module('Database').config.defaultHypervideoHidden.toString() == "true") ? "checked" : "")+'>'
+                        + '            <input type="checkbox" name="hidden" id="hypervideo_hidden" value="hidden" '+((FrameTrail.module('Database').project.defaultHypervideoHidden.toString() == "true") ? "checked" : "")+'>'
                         + '            <label for="hypervideo_hidden">Hidden from other users?</label>'
                         + '        </div>'
                         + '        <div class="formColumn column2">'
                         + '            <label for="description">Description</label>'
                         + '            <textarea name="description" placeholder="Description"></textarea><br>'
                         + '        </div>'
+                        /*
+                        + '        <div class="hypervideoLayout">'
+                        + '            <div>Player Layout:</div>'
+                        + '            <div class="settingsContainer">'
+                        + '                <div class="layoutSettingsWrapper">'
+                        + '                    <div data-config="areaTopVisible" class="'+ ((FrameTrail.module('Database').project.defaultHypervideoConfig['areaTopVisible'].toString() == 'true') ? 'active' : '') +'">LayoutArea Top</div>'
+                        + '                    <div class="playerWrapper">'
+                        + '                        <div data-config="overlaysVisible" class="'+ ((FrameTrail.module('Database').project.defaultHypervideoConfig['overlaysVisible'].toString() == 'true') ? 'active' : '') +'">Overlays</div>'
+                        + '                        <div data-config="areaRightVisible" class="'+ ((FrameTrail.module('Database').project.defaultHypervideoConfig['areaRightVisible'].toString() == 'true') ? 'active' : '') +'">LayoutArea Right</div>'
+                        + '                    </div>'
+                        + '                    <div data-config="areaBottomVisible" class="'+ ((FrameTrail.module('Database').project.defaultHypervideoConfig['areaBottomVisible'].toString() == 'true') ? 'active' : '') +'">LayoutArea Bottom</div>'
+                        + '                </div>'
+                        + '                <div class="genericSettingsWrapper">Layout Mode'
+                        + '                    <div data-config="slidingMode" class="'+ ((FrameTrail.module('Database').project.defaultHypervideoConfig['slidingMode'].toString() == 'overlay') ? 'active' : '') +'">'
+                        + '                        <div class="slidingMode" data-value="adjust">Adjust</div>'
+                        + '                        <div class="slidingMode" data-value="overlay">Overlay</div>'
+                        + '                    </div>'
+                        + '                </div>'
+                        + '            </div>'
+                        + '            <div class="subtitlesSettingsWrapper">'
+                        + '                <span>Subtitles</span>'
+                        + '                <button id="SubtitlesPlus" type="button">Add +</button>'
+                        + '                <input type="checkbox" name="config[captionsVisible]" id="captionsVisible" value="true">'
+                        + '                <label for="captionsVisible">Show by default (if present)</label>'
+                        + '                <div id="NewSubtitlesContainer"></div>'
+                        + '            </div>'
+                        + '        </div>'
+                        */
                         + '        <div style="clear: both;"></div>'
                         + '        <hr>'
                         + '        <div class="newHypervideoTabs">'
@@ -198,6 +223,7 @@ FrameTrail.defineModule('Titlebar', function(FrameTrail){
 
 
         FrameTrail.module('ResourceManager').renderList(newDialog.find('.newHypervideoDialogResources'), true,
+            FrameTrail.module('RouteNavigation').projectID,
             'type',
             'contains',
             'video'
@@ -249,6 +275,7 @@ FrameTrail.defineModule('Titlebar', function(FrameTrail){
                         "autohideControls": true,
                         "captionsVisible": false,
                         "hidden": $('.newHypervideoForm').find('input[name="hidden"]').is(':checked'),
+                        "theme": (FrameTrail.module('Database').project.theme) ? FrameTrail.module('Database').project.theme : null,
                         "layoutArea": {
                             "areaTop": [],
                             "areaBottom": [],
@@ -337,7 +364,7 @@ FrameTrail.defineModule('Titlebar', function(FrameTrail){
 
             },
             dataType:   'json',
-            data: {'a': 'hypervideoAdd'},
+            data: {'a': 'hypervideoAdd', 'projectID': projectID},
             success: function(response) {
                 switch(response['code']) {
                     case 0:
@@ -365,6 +392,7 @@ FrameTrail.defineModule('Titlebar', function(FrameTrail){
                 NewHypervideoDialogResources.empty();
 
                 FrameTrail.module('ResourceManager').renderList(NewHypervideoDialogResources, true,
+                    FrameTrail.module('RouteNavigation').projectID,
                     'type',
                     'contains',
                     'video'
@@ -482,7 +510,7 @@ FrameTrail.defineModule('Titlebar', function(FrameTrail){
         if (FrameTrail.module('RouteNavigation').hypervideoID) {
             domElement.find('button[data-viewmode="video"]').show();
 
-            // count visible hypervideos
+            // count visible hypervideos in project
             var hypervideos = FrameTrail.module('Database').hypervideos,
                 visibleCount = 0;
             for (var id in hypervideos) {

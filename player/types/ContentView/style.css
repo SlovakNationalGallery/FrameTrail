@@ -358,14 +358,14 @@
 }
 
 .layoutManager .layoutArea .contentViewPreview, .contentViewAnimationDiv {
-	background: var(--secondary-bg-color) !important;
+	background: var(--secondary-bg-color);
 	padding: 10px;
 	box-sizing: border-box;
 }
 
 .contentViewAnimationDiv {
 	border: 2px solid var(--primary-bg-color);
-	color: transparent;
+	color: var(--primary-fg-color);
 	pointer-events: none;
 }
 
@@ -402,13 +402,13 @@
 
 .contentViewEditingUI input[type="text"] {
 	box-sizing: border-box;
-	height: 32px;
+	height: 42px;
 }
 .contentViewEditingUI textarea {
 	display: block;
 	box-sizing: border-box;
 	width: 96%;
-	height: 32px;
+	height: 42px;
 }
 .contentViewEditingUI .typeSpecific {
 	position: relative;
@@ -420,7 +420,7 @@
 }
 
 .contentViewEditingUI .typeSpecific.codeEditorSmall {
-	height: 80px;
+	height: 100px;
 }
 
 .contentViewEditingUI .typeSpecific.codeEditorLarge {

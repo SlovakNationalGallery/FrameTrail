@@ -52,6 +52,7 @@ FrameTrail.defineModule('UserManagement', function(FrameTrail){
 						+   '             	<input type="password" name="passwd" id="SettingsForm_passwd" placeholder="New password"><br>'
 						+   '             	<br>'
 						+   '             	<input type="hidden" name="a" value="userChange">'
+						+	'             	<input type="hidden" name="projectID" value="">'
 						+	'             	<input type="hidden" name="userID" id="SettingsForm_userID" value="">'
 						+   '             	<input type="submit" value="Change my settings!">'
 						+   '             </form>'
@@ -63,6 +64,7 @@ FrameTrail.defineModule('UserManagement', function(FrameTrail){
 						+	'             	<input type="text" name="mail" placeholder="Mail"><br>'
 						+	'             	<input type="password" name="passwd" placeholder="Password"><br>'
 						+	'             	<input type="hidden" name="a" value="userRegister">'
+						+	'             	<input type="hidden" name="projectID" value=""><br>'
 						+	'             	<input type="submit" value="Register new user!">'
 						+	'             </form>'
 						+	'        </div>'
@@ -89,6 +91,7 @@ FrameTrail.defineModule('UserManagement', function(FrameTrail){
 						+   '             	    <input type="radio" name="active" id="user_change_active_0" value="0">'
                         +   '                   <label for="user_change_active_0">Inactive</label><br><br>'
 						+   '             	    <input type="hidden" name="a" value="userChange">'
+						+	'             	    <input type="hidden" name="projectID" value="">'
 						+   '             	    <input type="submit" value="Change this user\'s settings.">'
                         +   '               </div>'
 						+   '             </form>'
@@ -109,6 +112,7 @@ FrameTrail.defineModule('UserManagement', function(FrameTrail){
 				+	'             	<input type="text" name="mail" placeholder="Mail"><br>'
 				+	'             	<input type="password" name="passwd" placeholder="Password"><br>'
 				+	'             	<input type="hidden" name="a" value="userLogin">'
+				+	'             	<input type="hidden" name="projectID" value=""><br>'
 				+	'             	<input type="submit" value="Login">'
 				+	'             	<button type="button" class="loginBoxCancelButton">Cancel</button>'
 				+	'             </form>'
@@ -119,7 +123,8 @@ FrameTrail.defineModule('UserManagement', function(FrameTrail){
 				+	'             	<input type="text" name="name" placeholder="Your Name">'
 				+	'             	<input type="text" name="mail" placeholder="Mail"><br>'
 				+	'             	<input type="password" name="passwd" placeholder="Password"><br>'
-				+	'             	<input type="hidden" name="a" value="userRegister"><br>'
+				+	'             	<input type="hidden" name="a" value="userRegister">'
+				+	'             	<input type="hidden" name="projectID" value=""><br>'
 				+	'             	<input type="submit" value="Create Account">'
 				+	'             	<button type="button" class="loginBoxCancelButton">Cancel</button>'
 				+	'             </form>'
@@ -139,6 +144,7 @@ FrameTrail.defineModule('UserManagement', function(FrameTrail){
 		method: 	"POST",
 		url: 		"../_server/ajaxServer.php",
 		dataType:   "json",
+		data:       { "projectID":FrameTrail.module('RouteNavigation').projectID },
 		success: function(response) {
 
 			switch(response.code){
@@ -149,7 +155,7 @@ FrameTrail.defineModule('UserManagement', function(FrameTrail){
 					domElement.find('.registrationFormStatus').removeClass('success').addClass('active error').text('Please fill out all fields! Is the mail adress valid?');
 					break;
 				case 2:
-					domElement.find('.registrationFormStatus').removeClass('success').addClass('active error').text('Email already exists.');
+					domElement.find('.registrationFormStatus').removeClass('success').addClass('active error').text('Email already exists in this project.');
 					break;
 				case 3:
 					domElement.find('.registrationFormStatus').removeClass('success error').addClass('active').text('You are registered, but you need to get activated by an admin!');
@@ -164,6 +170,7 @@ FrameTrail.defineModule('UserManagement', function(FrameTrail){
 		method: 	"POST",
 		url: 		"../_server/ajaxServer.php",
 		dataType:   "json",
+		data:       { "projectID":FrameTrail.module('RouteNavigation').projectID },
 		success: function(response) {
 			switch(response.code){
 				case 0:
@@ -208,7 +215,7 @@ FrameTrail.defineModule('UserManagement', function(FrameTrail){
 			method: 	"POST",
 			url: 		"../_server/ajaxServer.php",
 			dataType: 	"json",
-            data: 		"a=userGet",
+            data: 		"a=userGet&projectID=" + FrameTrail.module('RouteNavigation').projectID,
 			success: function(data) {
 
 				var allUsers = data.response.user;
@@ -229,6 +236,7 @@ FrameTrail.defineModule('UserManagement', function(FrameTrail){
 						method: "POST",
 						url: 	"../_server/ajaxServer.php",
 						data: 	{	"a": "userGet",
+									"projectID": FrameTrail.module('RouteNavigation').projectID,
 									"userID": $("#user_change_user option:selected").val()
 								},
 
@@ -268,6 +276,7 @@ FrameTrail.defineModule('UserManagement', function(FrameTrail){
 		method: 	"POST",
 		url: 		"../_server/ajaxServer.php",
 		dataType: 	"json",
+		data: {"projectID":FrameTrail.module('RouteNavigation').projectID},
 		success: function(response) {
 			// TODO: Update client userData Object if Admin edited himself via this view instead of "Settings" Tab
 			refreshAdministrationForm();
@@ -384,6 +393,7 @@ FrameTrail.defineModule('UserManagement', function(FrameTrail){
 		method: 	"POST",
 		url: 		"../_server/ajaxServer.php",
 		dataType:   "json",
+		data:       { "projectID":FrameTrail.module('RouteNavigation').projectID },
 
 		success: function(response) {
 			//console.log(response);
@@ -392,15 +402,6 @@ FrameTrail.defineModule('UserManagement', function(FrameTrail){
 				case 0:
 					userSessionLifetime = parseInt(response.session_lifetime);
 					login(response.userdata);
-
-					FrameTrail.triggerEvent('userAction', {
-						action: 'UserLogin',
-						userID: response.userdata.id,
-						userName: response.userdata.name,
-						userRole: response.userdata.role,
-						userMail: response.userdata.mail
-					});
-
 					loginBox.find('.loginFormStatus').removeClass('active error success').text('');
 					updateView(true);
 					if(typeof userBoxCallback === 'function'){
@@ -419,7 +420,7 @@ FrameTrail.defineModule('UserManagement', function(FrameTrail){
 					loginBox.find('.loginFormStatus').removeClass('success').addClass('active error').text('Incorrect Password');
 					break;
 				case 4:
-					loginBox.find('.loginFormStatus').removeClass('success').addClass('active error').text('Fatal error: Could not find user database.');
+					loginBox.find('.loginFormStatus').removeClass('success').addClass('active error').text('Fatal error: Could not find user database. Project deleted?');
 					break;
 				case 5:
 					loginBox.find('.loginFormStatus').removeClass('success').addClass('active error').text('User is not active. Please contact an admin!');
@@ -435,6 +436,7 @@ FrameTrail.defineModule('UserManagement', function(FrameTrail){
 		method: 	"POST",
 		url: 		"../_server/ajaxServer.php",
 		dataType:   "json",
+		data:       { "projectID":FrameTrail.module('RouteNavigation').projectID },
 		success: function(response) {
 
 			switch(response.code){
@@ -453,7 +455,7 @@ FrameTrail.defineModule('UserManagement', function(FrameTrail){
 					loginBox.find('.userRegistrationFormStatus').removeClass('success').addClass('active error').text('Please fill out all fields! Is the mail adress valid?');
 					break;
 				case 2:
-					loginBox.find('.userRegistrationFormStatus').removeClass('success').addClass('active error').text('Email already exists.');
+					loginBox.find('.userRegistrationFormStatus').removeClass('success').addClass('active error').text('Email already exists in this project.');
 					break;
 				case 3:
 					loginBox.find('.userRegistrationFormStatus').removeClass('success error').addClass('active').text('You are registered, but you need to get activated by an admin before you can login!');
@@ -537,7 +539,7 @@ FrameTrail.defineModule('UserManagement', function(FrameTrail){
 			method: 	"POST",
 			url: 		"../_server/ajaxServer.php",
 			dataType: 	"json",
-            data: 		"a=userCheckLogin",
+            data: 		"a=userCheckLogin&projectID=" + FrameTrail.module('RouteNavigation').projectID,
 			success: function(response) {
 				switch(response.code){
 
@@ -553,15 +555,7 @@ FrameTrail.defineModule('UserManagement', function(FrameTrail){
 						break;
 
 					case 2:
-						throw new Error('User file is missing.');
-						break;
-
-					case 3:
-						throw new Error('Logged in but user not active');
-						break;
-
-					case 4:
-						throw new Error('Logged in but not with required role.');
+						throw new Error('Project could not be found.');
 						break;
 
 				}
@@ -609,7 +603,7 @@ FrameTrail.defineModule('UserManagement', function(FrameTrail){
 			method: 	"POST",
 			url: 		"../_server/ajaxServer.php",
 			dataType: 	"json",
-            data: 		"a=userLogout",
+            data: 		"a=userLogout&projectID=" + FrameTrail.module('RouteNavigation').projectID,
 			success: function(data) {
 
 				if (userID != '') {
@@ -618,30 +612,17 @@ FrameTrail.defineModule('UserManagement', function(FrameTrail){
                                       + '</div>');
 
 	                loggedOutDialog.dialog({
-						resizable: false,
-						modal: true,
-						close: function() {
-							loggedOutDialog.remove();
-							/*
-							window.setTimeout(function() {
-                                window.location.reload();
-                            }, 100);
-                            */
-						},
-						buttons: {
-							"OK": function() {
-								FrameTrail.triggerEvent('userAction', {
-									action: 'UserLogout'
-								});
-
-								if (FrameTrail.module('Database').config.alwaysForceLogin) {
-									FrameTrail.module('InterfaceModal').hideMessage();
-									FrameTrail.module('UserManagement').ensureAuthenticated(function() {}, function() {}, true);
-								}
-
-								$( this ).dialog( "close" );
-							}
-						}
+	                  resizable: false,
+	                  modal: true,
+	                  close: function() {
+	                    loggedOutDialog.remove();
+	                    document.location.reload();
+	                  },
+	                  buttons: {
+				        "OK": function() {
+				          $( this ).dialog( "close" );
+				        }
+				      }
 	                });
 				}
 
@@ -658,10 +639,6 @@ FrameTrail.defineModule('UserManagement', function(FrameTrail){
 				});
 
 				updateView(false);
-
-				FrameTrail.triggerEvent('userAction', {
-					action: 'UserLogout'
-				});
 
 			}
 

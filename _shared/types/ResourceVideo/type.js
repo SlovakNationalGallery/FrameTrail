@@ -46,7 +46,8 @@ FrameTrail.defineType(
 
                     return $(
                             '<video class="resourceDetail" data-type="'+ this.resourceData.type +'" controls autobuffer>'
-                        +       '<source src="../_data/'
+                        +       '<source src="../_data/projects/'
+                        +       FrameTrail.module('RouteNavigation').projectID
                         +       '/resources/'
                         +       this.resourceData.src
                         +       '" type="video/mp4">'

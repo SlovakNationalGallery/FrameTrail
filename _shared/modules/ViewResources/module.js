@@ -76,11 +76,11 @@ FrameTrail.defineModule('ViewResources', function(FrameTrail){
      */
     function create(withoutDialog) {
 
+        $('.mainContainer').append(domElement);
+
         showAsDialog = ! withoutDialog;
 
         if (showAsDialog) {
-
-            $('.mainContainer').append(domElement);
 
             domElement.dialog({
                 autoOpen: false,
@@ -96,12 +96,6 @@ FrameTrail.defineModule('ViewResources', function(FrameTrail){
                 }
             });
 
-        } else {
-            
-            var wrapperElem = $('<div class="resourceManagerContent"></div>');
-            
-            wrapperElem.append(domElement)
-            $('.mainContainer').append(wrapperElem);
         }
 
         FrameTrail.changeState('viewSize', FrameTrail.getState('viewSize'));
@@ -126,6 +120,7 @@ FrameTrail.defineModule('ViewResources', function(FrameTrail){
         } else {
 
             FrameTrail.module('ResourceManager').renderList(ResourcesList, true,
+                FrameTrail.module('RouteNavigation').projectID,
                 'type',
                 'contains',
                 type
@@ -187,6 +182,7 @@ FrameTrail.defineModule('ViewResources', function(FrameTrail){
 
             for (var i in deleteCollection) {
                 FrameTrail.module('ResourceManager').deleteResource(
+                    FrameTrail.module('RouteNavigation').projectID,
                     deleteCollection[i],
                     function(){
                         callbackCollection.push(true);

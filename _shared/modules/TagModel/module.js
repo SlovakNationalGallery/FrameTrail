@@ -4,7 +4,7 @@
 
 /**
  * I am the TagModel.
- * I manage the tag definitions stored on the server, and localize their labels and descriptions.
+ * I manage the tag definitions stored on the server for each project, and localize their labels and descriptions.
  *
  * I query the {{#crossLink "HypervideoModel"}}HypervideoModel{{/crossLink}} for filtered collections of Overlays and Annotations
  *
@@ -15,7 +15,8 @@
  FrameTrail.defineModule('TagModel', function(FrameTrail){
 
 
-    var tags        = {};
+    var projectID   = FrameTrail.module('RouteNavigation').projectID || '',
+        tags        = {};
 
 
 
@@ -30,7 +31,7 @@
 
         $.ajax({
             type:     "GET",
-            url:      '../_data/tagdefinitions.json',
+            url:      '../_data/projects/' + projectID + '/tagdefinitions.json',
             cache:    false,
             dataType: "json",
             mimeType: "application/json"
@@ -69,6 +70,7 @@
             cache:  false,
             data: {
                 a:              'tagSet',
+                projectID:      projectID,
                 tagName:        tagname,
                 lang:           language,
                 label:          label,
@@ -89,6 +91,7 @@
             cache:  false,
             data: {
                 a:              'tagLangDelete',
+                projectID:      projectID,
                 tagName:        tagname,
                 language:       language
             }
@@ -107,6 +110,7 @@
             cache:  false,
             data: {
                 a:              'tagDelete',
+                projectID:      projectID,
                 tagName:        tagname
             }
 

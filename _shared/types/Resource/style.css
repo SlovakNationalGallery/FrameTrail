@@ -59,7 +59,6 @@
 	height: 16px;
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
-	z-index: 2;
 }
 
 .resourceThumb .resourceOverlay .resourceIcon [class^="icon-"]::before, .resourceThumb .resourceOverlay .resourceIcon [class*=" icon-"]::before {
@@ -131,8 +130,8 @@
 
 .editPropertiesContainer .previewThumbContainer {
 	float: right;
-	height: 100px;
-	width: 140px;
+	height: 130px;
+	width: 200px;
 }
 
 .editPropertiesContainer .previewThumbContainer .resourceThumb {
@@ -163,7 +162,7 @@
 
 .editPropertiesContainer .ui-spinner {
 	border: 1px solid var(--primary-bg-color);
-    margin-right: 0px;
+    margin-right: 10px;
     padding: 2px;
     width: 53px;
     background: var(--primary-fg-color);
@@ -202,24 +201,18 @@
 .editPropertiesContainer .timeControls {
 	float: left;
 	position: relative;
-	width: 126px;
+	width: 132px;
 	overflow: hidden;
 }
 
-.editPropertiesContainer .timeControls .ui-spinner {
-	width: 70px;
-	margin: 5px 0 5px 0;
-	display: inline-block;
-}
-
-.editPropertiesContainer .timeControls label {
-	width: 40px;
+.editPropertiesContainer .timeControls label, .editPropertiesContainer .timeControls .ui-spinner {
+	width: 120px;
 	margin-bottom: 0px;
-	display: inline-block;
+	display: block;
 }
 
 .editPropertiesContainer .timeControls .ui-spinner input {
-	width: 52px;
+	width: 100px;
 	overflow: hidden;
 }
 
@@ -231,7 +224,7 @@
 }
 
 .editPropertiesContainer .positionControls {
-	float: right;
+	float: left;
 	position: relative;
 	margin-bottom: 10px;
 	width: 232px;
@@ -267,23 +260,8 @@
     top: 50%;
 }
 
-.editPropertiesContainer .textContentEditorContainer {
-	height: 100%;
-}
-
-.editPropertiesContainer .overlayOptionsWrapper {
+.editPropertiesContainer .overlayOptionsTabs {
 	clear: both;
-	height: calc(100% - 140px);
-}
-
-.editPropertiesContainer .annotationOptionsWrapper {
-	clear: both;
-	height: calc(100% - 104px);
-}
-
-.editPropertiesContainer .overlayOptionsTabs, .editPropertiesContainer .annotationOptionsTabs {
-	clear: both;
-	height: 100%;
 }
 
 .editPropertiesContainer .opacitySlider {
@@ -306,5 +284,4 @@
 .editPropertiesContainer textarea {
 	box-sizing: border-box;
     width: 100%;
-    visibility: hidden;
 }

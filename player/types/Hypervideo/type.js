@@ -4,7 +4,7 @@
 
 
 /**
- * I am the type definition of an Hypervideo (as an item in the overview mode).
+ * I am the type definition of an Hypervideo (as an item in the overview mode or in project manager).
  * __Do not confuse me__ with the data model of the current hypervideo stored
  * in {{#crossLink "HypervideoModel"}}HypervideoModel{{/crossLink}}!
  *
@@ -39,7 +39,9 @@ FrameTrail.defineType(
 
                     var hypervideoID    = FrameTrail.module('Database').getIdOfHypervideo(this.data),
 
-                        href            =     '?hypervideo='
+                        href            =     '?project='
+                                            + FrameTrail.module('RouteNavigation').projectID
+                                            + '&hypervideo='
                                             + hypervideoID,
 
                         thumbBackground = (this.data.thumb ?

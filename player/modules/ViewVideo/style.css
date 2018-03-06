@@ -227,7 +227,6 @@
     -webkit-transition-duration: 500ms;
     -o-transition-property: margin-top;
     -o-transition-duration: 500ms;
-    overflow: hidden;
 }
 
 /* Not used at the moment */

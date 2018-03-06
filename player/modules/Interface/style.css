@@ -21,7 +21,7 @@
 	margin-left: 164px;
 }
 
-.mainContainer.inFullscreen:not(.editActive) {
+.mainContainer.inFullscreen {
 	width: 100%;
 	top: 0px;
 }

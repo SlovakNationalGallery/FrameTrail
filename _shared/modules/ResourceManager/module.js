@@ -72,14 +72,14 @@ FrameTrail.defineModule('ResourceManager', function(FrameTrail){
 
                     maxUploadBytes = response.maxuploadbytes;
 
-                    var uploadDialog =  $('<div class="uploadDialog" title="Add New Resource">'
+                    var projectID = FrameTrail.module('RouteNavigation').projectID,
+                        uploadDialog =  $('<div class="uploadDialog" title="Add New Resource">'
                                         + '    <form class="uploadForm" method="post">'
                                         + '        <div class="resourceInputTabContainer">'
                                         + '            <ul class="resourceInputTabList">'
                                         + '                <li data-type="url"><a href="#resourceInputTabURL">Paste URL</a></li>'
                                         + '                <li data-type="image"><a href="#resourceInputTabImage">Upload Image</a></li>'
                                         + '                <li data-type="video"><a href="#resourceInputTabVideo">Upload Video</a></li>'
-                                        + '                <li data-type="pdf"><a href="#resourceInputTabPDF">Upload PDF</a></li>'
                                         + '                <li data-type="map"><a href="#resourceInputTabMap">Add Map</a></li>'
                                         + '            </ul>'
                                         + '            <div id="resourceInputTabURL">'
@@ -89,10 +89,6 @@ FrameTrail.defineModule('ResourceManager', function(FrameTrail){
                                         + '            <div id="resourceInputTabImage">'
                                         + '                <div class="message active">Add image file in the format <b>jpg, jpeg, gif, png</b>. Maximum File Size: <b>3 MB</b></div>'
                                         + '                <input type="file" name="image">'
-                                        + '            </div>'
-                                        + '            <div id="resourceInputTabPDF">'
-                                        + '                <div class="pdfInputMessage message active">Add video file in <b>PDF</b> format. Maximum File Size: <b>3 MB</b>.</div>'
-                                        + '                <input type="file" name="pdf"> .pdf'
                                         + '            </div>'
                                         + '            <div id="resourceInputTabVideo">'
                                         + '                <div class="videoInputMessage message active">Add video file in <b>mp4</b> format. Maximum File Size: <b>'+ bytesToSize(maxUploadBytes) +'</b>.<br>For more info on video conversion see http://www.mirovideoconverter.com.</div>'
@@ -116,6 +112,7 @@ FrameTrail.defineModule('ResourceManager', function(FrameTrail){
                                         + '            <div class="nameInputMessage">Name</div>'
                                         + '            <input type="text" name="name" placeholder="Enter a name for the new resource" class="resourceNameInput">'
                                         + '            <input type="hidden" name="a" value="fileUpload">'
+                                        + '            <input type="hidden" name="projectID" value="'+ projectID +'">'
                                         + '            <input type="hidden" name="attributes" value="">'
                                         + '            <input type="hidden" name="type" value="url">'
                                         + '        </div>'
@@ -220,17 +217,10 @@ FrameTrail.defineModule('ResourceManager', function(FrameTrail){
 
                             else if (tmpType == 'image') {
                                 uploadDialog.find('#resourceInputTabVideo input').prop('disabled',true);
-                                uploadDialog.find('#resourceInputTabPDF input').prop('disabled',true);
                             }
 
                             else if (tmpType == 'video') {
                                 uploadDialog.find('#resourceInputTabImage input').prop('disabled',true);
-                                uploadDialog.find('#resourceInputTabPDF input').prop('disabled',true);
-                            }
-
-                            else if (tmpType == 'pdf') {
-                                uploadDialog.find('#resourceInputTabImage input').prop('disabled',true);
-                                uploadDialog.find('#resourceInputTabVideo input').prop('disabled',true);
                             }
 
                             var percentVal = '0%';
@@ -246,7 +236,7 @@ FrameTrail.defineModule('ResourceManager', function(FrameTrail){
                         beforeSend: function(xhr) {
                             var tmpType = uploadDialog.find('.nameInputContainer input[name="type"]').val();
 
-                            // client side pre-validation (server checks again)
+                            // client side pre-validation to prevent upload of one file (server checks again)
                             if (tmpType == 'video') {
                                 if( uploadDialog.find('[name="mp4"]').val().length < 4) {
                                     uploadDialog.find('.progress').hide();
@@ -316,7 +306,7 @@ FrameTrail.defineModule('ResourceManager', function(FrameTrail){
                                                 $.ajax({
                                                     url:        '../_server/ajaxServer.php',
                                                     type:       'post',
-                                                    data:       {'a':'fileUploadThumb','resourcesID':respText['response']['resId'],'type':respText['response']['resource']['type'],'thumb':canvas.toDataURL()},
+                                                    data:       {'a':'fileUploadThumb','projectID':projectID,'resourcesID':respText['response']['resId'],'type':respText['response']['resource']['type'],'thumb':canvas.toDataURL()},
                                                     /**
                                                      * Description
                                                      * @method success
@@ -371,7 +361,7 @@ FrameTrail.defineModule('ResourceManager', function(FrameTrail){
                                                 $.ajax({
                                                     url:        '../_server/ajaxServer.php',
                                                     type:       'post',
-                                                    data:       {'a':'fileUploadThumb','resourcesID':respText['response']['resId'],'type':respText['response']['resource']['type'],'thumb':canvas.toDataURL()},
+                                                    data:       {'a':'fileUploadThumb','projectID':projectID,'resourcesID':respText['response']['resId'],'type':respText['response']['resource']['type'],'thumb':canvas.toDataURL()},
                                                     success: function() {
                                                         $(image).remove();
                                                         $(canvas).remove();
@@ -419,7 +409,7 @@ FrameTrail.defineModule('ResourceManager', function(FrameTrail){
                                 case 3:
                                     uploadDialog.find('.progress').hide();
                                     uploadDialog.find('.newResourceConfirm').prop('disabled', false);
-                                    $('.uploadDialog').append('<div class="message active error">Could not find resources folder.</div>');
+                                    $('.uploadDialog').append('<div class="message active error">Could not find the projects resources folder.</div>');
                                     break;
                                 case 4:
                                     uploadDialog.find('.progress').hide();
@@ -688,11 +678,12 @@ FrameTrail.defineModule('ResourceManager', function(FrameTrail){
 	 * I delete a resource from the server.
 	 *
 	 * @method deleteResource
+	 * @param {String} projectID
 	 * @param {String} resourceID
 	 * @param {Function} successCallback
 	 * @param {Function} cancelCallback
 	 */
-	function deleteResource(resourceID, successCallback, cancelCallback) {
+	function deleteResource(projectID, resourceID, successCallback, cancelCallback) {
 
 		$.ajax({
 			type:   'POST',
@@ -700,6 +691,7 @@ FrameTrail.defineModule('ResourceManager', function(FrameTrail){
 			cache:  false,
 			data: {
 				a: 			'fileDelete',
+				projectID: 	projectID,
 				resourcesID: resourceID
 			}
 		}).done(function(data) {
@@ -718,7 +710,7 @@ FrameTrail.defineModule('ResourceManager', function(FrameTrail){
 
 
 	/**
-	 * I render a list of thumbnails for either all resource items,
+	 * I render a list of thumbnails for either all resource items of the project,
 	 * or a narrowed down set of them.
 	 *
 	 * The targetElement should be a &lt;div&gt; or likewise, and will afterwards contain
@@ -726,14 +718,17 @@ FrameTrail.defineModule('ResourceManager', function(FrameTrail){
 	 *
 	 * If filter is true, then the method will ask the server only for a list of resources which meet the key-condition-value requirements (e.g. "type" "==" "video"). See also server docs!
 	 *
+	 * Note: projectID must be set!
+	 *
 	 * @method renderList
 	 * @param {HTMLElement} targetElement
 	 * @param {Boolean} filter
+	 * @param {String} projectID
 	 * @param {String} key
 	 * @param {String} condition
 	 * @param {String} value
 	 */
-	function renderList(targetElement, filter, key, condition, value) {
+	function renderList(targetElement, filter, projectID, key, condition, value) {
 
 		targetElement.empty();
 		targetElement.append('<div class="loadingScreen"><div class="workingSpinner dark"></div></div>');
@@ -741,7 +736,7 @@ FrameTrail.defineModule('ResourceManager', function(FrameTrail){
 
 		if (filter) {
 
-			getFilteredList(targetElement, key, condition, value)
+			getFilteredList(targetElement, projectID, key, condition, value)
 
 		} else {
 
@@ -833,12 +828,13 @@ FrameTrail.defineModule('ResourceManager', function(FrameTrail){
 	 *
 	 * @method getFilteredList
 	 * @param {HTMLElement} targetElement
+	 * @param {String} projectID
 	 * @param {String} key
 	 * @param {String} condition
 	 * @param {String} value
 	 * @private
 	 */
-	function getFilteredList(targetElement, key, condition, value) {
+	function getFilteredList(targetElement, projectID, key, condition, value) {
 
 		$.ajax({
 
@@ -848,6 +844,7 @@ FrameTrail.defineModule('ResourceManager', function(FrameTrail){
 
             data: {
             	a: 			'fileGetByFilter',
+            	projectID: 	projectID,
             	key: 		key,
             	condition: 	condition,
             	value: 		value
